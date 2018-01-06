@@ -1,0 +1,24 @@
+/* from http://www.billwurtz.com/questions/questions.html */
+dco {color:#E9EC54;}
+rco {color:#ff6600;}
+qco {color:#B387FF;}
+green {color: #00cc00;}
+lightred {color: #ff6666;}
+red {color: #ff4444;}
+lightgreen {color: #b3ffb3;}
+.alignright {
+	float: right;
+}
+.alignleft {
+	float: left;
+}
+quotequestion{
+margin:20px;
+padding:5px;
+display:block;
+background-color:#444;
+border: 1px solid black;
+}
+quotedco{color:#e9ec54}
+quoteqco{color:#b387ff}
+quoteaco{color:#ffffff; font-weight:normal;}

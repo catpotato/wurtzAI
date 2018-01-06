@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src = "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<!-- google's jquery -->
+		<script type=text/javascript>
+  			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  			{% block hacky_js %}
+			{% endblock %}
+  			//give global varibale for root of application
+		</script>
+        <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+		<script src = "{{ url_for('static', filename = 'js/main.js') }}"></script>
+		{% block conditional_css %}
+		{% endblock %}
+		{% block conditional_js %}
+		{% endblock %}
+	</head>
+	<body>
+		{% block main %}
+		{% endblock %}
+	</body>
+</html>

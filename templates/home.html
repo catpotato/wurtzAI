@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block hacky_js %}
+{% endblock %}
+
+{% block conditional_js %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/main.js') }}">
+{% endblock %}
+
+{% block conditional_css %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/main.css') }}">
+{% endblock %}
+{% block main %}
+
+<main>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,"/>
+	<body>
+		<body style="word-wrap: break-word;">
+		</body>
+		<body bgcolor=#323232>
+		</body>
+		<body text=white>
+		</body>
+		<body link="#00FF00">
+		</body>
+		<body vlink=#67FF79>
+		</body>
+
+		<h1>ue<font color=#00EE3B>q</font>stions</h1>
+
+		<form action="questions.php" method="post" name="ask">
+
+		ask a question</br>
+
+		<textarea rows="7" cols="47" maxlength="10000" name="question"onkeypress="on_press(event, this)"></textarea>
+
+		</br>
+		<input type="hidden" name="location" value="question" />
+		<input type="button" onclick="submit_question();" value="ASK"/> </form>
+		</br>
+
+		{% for q, a in questions_and_answers %}
+			<h3>
+				<qco>{{q}}</qco>
+			</h3>
+			<br/>
+			{{a}}
+
+		{% endfor %}
+
+
+</main>
+{% endblock %}
