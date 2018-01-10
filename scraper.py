@@ -35,6 +35,7 @@ def make_csv(year, month, csv_dict):
     file = os.path.join(directory + "/" + month + ".csv")
     with open(file, 'wt') as csv_file:
         writer = csv.writer(csv_file)
+        writer.writerow(['question', 'answer'])
         for key, value in csv_dict.items():
             writer.writerow([key, value])
 
@@ -56,15 +57,26 @@ def format_txt(a, answer=False):
                 if a[0] == "'" or a[0] == '"':
                     a = a[1:-1]
                     # add period at the end
-                if a[-1] != "?" and a[-1] != "." and a[-1] != "!":
+
+                last_char = a[-1]
+
+                if last_char != "?" and last_char != "." and last_char != "!":
                     if answer:
                         a = a + '.'
                     else:
-                        a = a + "?"
+                        a = a + '?'
+                else:
+                    if answer:
+                        a[-1] = '.'
+                    else:
+                        a[-1] = '?'
             # add quotes
-            a = "'" + a + "'"
+            # a = "'" + a + "'"
     except TypeError:
-        return("")
+        if answer:
+            return '.'
+        else:
+            return '?'
 
     return a
 
