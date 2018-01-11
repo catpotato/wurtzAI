@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 
 '''
 
-def get_df(path_to_data, size=False):
+def get_df(path_to_data, size=False, max_len=False):
 
     csvs = glob("../" + path_to_data + "/*/*.csv")
 
@@ -23,6 +23,9 @@ def get_df(path_to_data, size=False):
 
     for csv in csvs:
         questions_and_answers = pd.concat([questions_and_answers, pd.read_csv(csv)], ignore_index=True)
+
+    if max_len:
+        questions_and_answers =
 
     if size:
         questions_and_answers.sample(frac=(size/questions_and_answers.shape[0])).reset_index(drop=True)
@@ -51,30 +54,37 @@ e.g.
 
 def get_big_long_line(path_to_data, size=False):
 
-    questions_and_answers = get_df(path_to_data)
+    questions_and_answers = get_df(path_to_data, size=size)
     questions_and_answers["qanda"] =  questions_and_answers["question"] + questions_and_answers["answer"]
     big_long_line = questions_and_answers["qanda"].str.cat(sep = '')
 
     return big_long_line
 
+def get_them_and_bill_text(path_to_data, size=False):
+    questions_and_answers = get_df(path_to_data, size=size)
+    them = questions_and_answers["question"].str.cat(sep = '')
+    bill = questions_and_answers["answer"].str.cat(sep = '')
+
+    return them, bill
+
+
 def transform(path_to_data, size=False, train_size=False, max_size=100):
 
-    questions_and_answers = get_df(path_to_data, size=size)
+    questions_and_answers = get_df(path_to_data)
+
+    # remove the ones that are wayyyy too long
+    mask = (questions_and_answers['question'].str.len() <= max_size) & (questions_and_answers['answer'].str.len() <= max_size)
+    questions_and_answers = questions_and_answers.loc[mask]
 
     # funky transforms, start char is \t, end char is \n
     questions_and_answers['question'] = '\t' + questions_and_answers['question'].astype(str) +'\n'
     questions_and_answers['answer'] = '\t' + questions_and_answers['answer'].astype(str) +'\n'
 
-    dataframe["final"] = dataframe["question"] + '\t'+ dataframe["answer"]
 
-    # TODO maybe drop all of the ones that are too long
-
-    # LEFTOFF
-    # Trying to remove really long ones
-
-    #questions_and_answers = questions_and_answers.loc[questions_and_answers['answer'] == "yes."]
-    #questions_and_answers = questions_and_answers.loc[len(questions_and_answers['answer']) <= max_size]
-
+    # shrink down to only what you want
+    if size:
+        questions_and_answers = questions_and_answers.sample(frac=(size/questions_and_answers.shape[0])).reset_index(drop=True)
+    print(questions_and_answers)
 
     if(train_size):
         train, test = train_test_split(questions_and_answers, train_size=train_size)
@@ -85,4 +95,4 @@ def transform(path_to_data, size=False, train_size=False, max_size=100):
     return train, test
 
 if __name__ == "__main__":
-    get_big_long_line('raw_data')
+    transform('raw_data')

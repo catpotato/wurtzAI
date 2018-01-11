@@ -70,8 +70,7 @@ def format_txt(a, answer=False):
                         a[-1] = '.'
                     else:
                         a[-1] = '?'
-            # add quotes
-            # a = "'" + a + "'"
+
     except TypeError:
         if answer:
             return '.'

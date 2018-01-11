@@ -9,6 +9,16 @@ def get_csv_as_dict(path):
 
     return d
 
+def get_csv_as_list_dict(path):
+    reader = csv.reader(open(path, 'r'))
+    next(reader, None)  # skip the headers
+    l = []
+    for row in reader:
+        k, v = row
+        l.append({'question':k, 'answer':v})
+
+    return l
+
 def merge_dictionaries(list_of_dicts):
     result = {}
     for d in list_of_dicts:

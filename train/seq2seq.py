@@ -53,9 +53,10 @@ if __name__ == "__main__":
     latent_dim = 256  # Latent dimensionality of the encoding space.
     # [x]
     num_samples = 10000  # Number of samples to train on.
+    size_lim=100
 
     # my own code
-    train, test = transform("raw_data", size = num_samples)
+    train, test = transform("raw_data", size = num_samples, max_size = size_lim)
 
     # Vectorize the data.
     input_texts = train['question'].tolist()

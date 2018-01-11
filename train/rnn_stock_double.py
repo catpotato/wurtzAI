@@ -7,9 +7,10 @@ from keras.layers.recurrent import LSTM
 from keras.layers.core import Dense, Activation, Dropout
 
 if __name__ == "__main__":
+
     import os
 
-    text = get_big_long_line('raw_data', size = 1000)
+    
 
     # get a list of the unique chars
     chars = list(set(text))
@@ -136,4 +137,4 @@ if __name__ == "__main__":
             print('temperature: %0.2f'%temp)
             print('%s'%generate(temperature=temp))
 
-    model.save('rnn_stock.h5')
+    model.save('rnn_double.h5')

@@ -1,31 +1,80 @@
 import datetime, random
 from entry import Entry
 from cal import Calendar
+
+from sqlalchemy import create_engine, select, Table, Column, Integer, Numeric, String, func
+from dbmodel import table_genarated, table_submitted
+
 class Page:
-    def __init__(questions = 100, date = datetime.datetime.now()):
+    def __init__(questions = 100, dt = datetime.datetime.now()):
         # make questions
         self.questions = 100
         self.entries = []
+        self.dt = dt
+        self.cal = Calendar(dt)
 
-        if date.day == -1
-        date
-        self.date = date
+        self.fill()
 
-        self.cal = Calendar(questions, self.date.)
+    def fill(self):
+        # first, determine how many questions are in the real database for this time period
 
-        for i in range(self.questions):
-            entries.append(Entry(get_date(i), get_time(i)))
+        # open up database
+
+        engine = create_engine('sqlite:///data.db', echo=True)
+        metadata = MetaData()
+
+        submitted = table_submitted(metadata)
+
+        # get all data from this month
+        s = select([submitted]).where(cookies.c.month == self.date.month)
+        submitted_entries = connection.execute(s)
+
+        # if the amount is less than we want
+        num_genarated = self.questions - rp.count()
+        genarated_entries = self.genarate(num_genarated, metadata)
+
+        # add the submitted q's in first, tell calendar where things lie
+
+        # add these bad boys into entries
+        for entry in submitted_entries:
+            self.add_submitted_entry(entry)
+
+        # tell calendar it can now fill things up
+        self.cal.genarate(num_genarated)
+
+        # fill up the entries with fake components
+        for entry in genarated_entries:
+            self.add_genarated_entry
+
+        # order all entries by date
+        entries = sorted(entries, key = lambda entry: entry.get_comparison())
+
+        # page done
 
 
+    def add_genarated_entry(self, e):
+        entry = Entry(self.cal.get_next_entry(), {'question': e.question, 'answer': e.answer})
+        self.entries.append(entry)
 
 
-    def get_date(self, index):
+    def add_submitted_entry(self, e):
+        # tell calendar you've updated
+        cal.add_entry(e.datetime)
 
-    def get_time(self, index):
+        # make an entry
+        entry = Entry(e.datetime, {'question': e.question, 'answer': e.answer})
 
-    def make_content(self):
+        # add the entry
+        self.entries.append(entry)
 
+    def genarate(self, num, metadata):
 
+        genarated = table_genarated(metadata)
+        s = select([submitted]).order_by(func.random()).limit(num)
+        return connection.execute(s)
+
+    def get_entries(self):
+        return self.entries
 
     def get_num_qs(self):
         pct_single = 95

@@ -28,23 +28,23 @@
 
 		<h1>ue<font color=#00EE3B>q</font>stions</h1>
 
-		<form action="questions.php" method="post" name="ask">
 
 		ask a question</br>
 
-		<textarea rows="7" cols="47" maxlength="10000" name="question"onkeypress="on_press(event, this)"></textarea>
 
-		</br>
-		<input type="hidden" name="location" value="question" />
-		<input type="button" onclick="submit_question();" value="ASK"/> </form>
-		</br>
 
-		{% for q, a in questions_and_answers %}
+		<form action="ask_question" method="post">
+    		<textarea name="text" rows="7" cols="47" maxlength="10000"></textarea>
+			</br>
+    		<input type="submit" value = "ASK">
+		</form>
+
+		{% for entry in questions_and_answers %}
 			<h3>
-				<qco>{{q}}</qco>
+				<qco>{{entry.question}}</qco>
 			</h3>
 			<br/>
-			{{a}}
+			{{entry.answer}}
 
 		{% endfor %}
 
