@@ -11,12 +11,23 @@
 		</script>
         <link rel="stylesheet" type="text/css" href="/static/css/main.css">
 		<script src = "{{ url_for('static', filename = 'js/main.js') }}"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,"/>
 		{% block conditional_css %}
 		{% endblock %}
 		{% block conditional_js %}
 		{% endblock %}
 	</head>
 	<body>
+		<body style="word-wrap: break-word;">
+		</body>
+		<body bgcolor=#323232>
+		</body>
+		<body text=white>
+		</body>
+		<body link="#00FF00">
+		</body>
+		<body vlink=#67FF79>
+		</body>
 		{% block main %}
 		{% endblock %}
 	</body>

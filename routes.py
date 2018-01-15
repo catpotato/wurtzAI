@@ -1,8 +1,14 @@
 from flask import Flask, render_template, request
 from page import Page
 import helpers
+from network import Network
 
 app = Flask(__name__)
+
+# HEY, MAKE SURE YOU MAKE ALL THIS JUNK TURN ON AT STARTUP
+# model = ''
+# network = Network(model)
+
 
 @app.route('/')
 def hello_world():
@@ -10,7 +16,8 @@ def hello_world():
 
 @app.route('/ask_question', methods=['POST'])
 def ask_question():
-    return request.form['text']
+    return render_template("home.html", question = request.form['text'], answer = 'sure.')
 
 if __name__ == '__main__':
+
     app.run(debug=True)

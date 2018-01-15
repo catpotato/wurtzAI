@@ -12,22 +12,8 @@
 {% endblock %}
 {% block main %}
 
-<main>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0,"/>
-	<body>
-		<body style="word-wrap: break-word;">
-		</body>
-		<body bgcolor=#323232>
-		</body>
-		<body text=white>
-		</body>
-		<body link="#00FF00">
-		</body>
-		<body vlink=#67FF79>
-		</body>
-
+	<main>
 		<h1>ue<font color=#00EE3B>q</font>stions</h1>
-
 
 		ask a question</br>
 
@@ -41,13 +27,15 @@
 
 		{% for entry in questions_and_answers %}
 			<h3>
-				<qco>{{entry.question}}</qco>
+				<dco>6.21.17  9:38 pm<!--entry.fomratted_date--></dco>
+				&nbsp;&nbsp;<qco>{{entry.question}}</qco>
 			</h3>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{entry.answer}}
 			<br/>
-			{{entry.answer}}
+			<br/>
 
 		{% endfor %}
 
 
-</main>
+	</main>
 {% endblock %}

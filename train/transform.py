@@ -24,10 +24,7 @@ def get_df(path_to_data, size=False, max_len=False):
     for csv in csvs:
         questions_and_answers = pd.concat([questions_and_answers, pd.read_csv(csv)], ignore_index=True)
 
-    if max_len:
-        questions_and_answers =
-
-    if size:
+    if size/questions_and_answers.shape[0] < 1 and size/questions_and_answers.shape[0] > 0:
         questions_and_answers.sample(frac=(size/questions_and_answers.shape[0])).reset_index(drop=True)
 
     return questions_and_answers
@@ -82,9 +79,8 @@ def transform(path_to_data, size=False, train_size=False, max_size=100):
 
 
     # shrink down to only what you want
-    if size:
+    if size and size/questions_and_answers.shape[0] < 1 :
         questions_and_answers = questions_and_answers.sample(frac=(size/questions_and_answers.shape[0])).reset_index(drop=True)
-    print(questions_and_answers)
 
     if(train_size):
         train, test = train_test_split(questions_and_answers, train_size=train_size)

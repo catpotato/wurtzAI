@@ -1,7 +1,8 @@
 from transform import transform
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.layers import Input, LSTM, Dense
 import numpy as np
+from make_char_mappings import save_as
 
 def decode_sequence(input_seq):
     # Encode the input as state vectors.
@@ -135,7 +136,8 @@ if __name__ == "__main__":
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
     model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_size=batch_size, epochs=epochs, validation_split=0.2)
     # Save model
-    model.save('s2s.h5')
+    model.save('models/s2s/s2s.h5')
+    # model = load_model('models/s2s.h5')
 
     # Next: inference mode (sampling).
     # Here's the drill:
@@ -160,6 +162,16 @@ if __name__ == "__main__":
     # something readable.
     reverse_input_char_index = dict((i, char) for char, i in input_token_index.items())
     reverse_target_char_index = dict((i, char) for char, i in target_token_index.items())
+
+    encoder_model.save('models/s2s/s2s_encoder.h5')
+    decoder_model.save('models/s2s/s2s_decoder.h5')
+
+    save_as(num_decoder_tokens, 'models/s2s/num_decoder_tokens')
+    save_as(target_token_index, 'models/s2s/target_token_index')
+    save_as(max_decoder_seq_length, 'models/s2s/max_decoder_seq_length')
+    save_as(num_decoder_tokens, 'models/s2s/num_decoder_tokens')
+    save_as(num_decoder_tokens, 'models/s2s/num_encoder_tokens')
+    save_as(input_token_index, 'models/s2s/input_token_index')
 
     for seq_index in range(100):
         # Take one sequence (part of the training test)

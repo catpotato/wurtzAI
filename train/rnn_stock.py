@@ -39,6 +39,9 @@ if __name__ == "__main__":
     char_labels = {ch:i for i, ch in enumerate(chars)}
     labels_char = {i:ch for i, ch in enumerate(chars)}
 
+    save_as(char_labels, 'models/rnn_stock/char_labels')
+    save_as(labels_char, 'models/rnn_stock/labels_char')
+
     # using bool to reduce memory usage, make zeros, x is 2-d array of one-hot vectors
     # ie
     # y is single char
@@ -136,4 +139,4 @@ if __name__ == "__main__":
             print('temperature: %0.2f'%temp)
             print('%s'%generate(temperature=temp))
 
-    model.save('rnn_stock.h5')
+    model.save('models/rnn_stock/rnn_stock.h5')

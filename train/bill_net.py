@@ -1,4 +1,5 @@
-from transform import get_big_long_line
+from transform import get_big_long_line, get_them_and_bill_text
+from make_char_mappings import save_as
 import random
 import numpy as np
 from glob import glob
@@ -14,6 +15,8 @@ if __name__ == "__main__":
 
     # get a list of the unique chars
     chars = list(set(text))
+    save_as(chars, 'bill_map')
+
 
     # how big the window looking back is
     max_len = 20
@@ -39,6 +42,9 @@ if __name__ == "__main__":
     # get a obverse and inverse labeling for each char
     char_labels = {ch:i for i, ch in enumerate(chars)}
     labels_char = {i:ch for i, ch in enumerate(chars)}
+
+    save_as(char_labels, 'models/bill_net/char_labels')
+    save_as(labels_char, 'models/bill_net/labels_char')
 
     # using bool to reduce memory usage, make zeros, x is 2-d array of one-hot vectors
     # ie
@@ -137,4 +143,4 @@ if __name__ == "__main__":
             print('temperature: %0.2f'%temp)
             print('%s'%generate(temperature=temp))
 
-    model.save('bill_net.h5')
+    model.save('models/bill_net/bill_net.h5')
