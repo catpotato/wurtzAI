@@ -1,4 +1,5 @@
 from transform import get_big_long_line, get_them_and_bill_text
+from make_char_mappings import save_as
 import random
 import numpy as np
 from glob import glob
@@ -14,7 +15,7 @@ if __name__ == "__main__":
 
     # get a list of the unique chars
     chars = list(set(text))
-    save_as(chars, 'question_net')
+    save_as(chars, 'models/question_net/question_net')
 
     # how big the window looking back is
     max_len = 20

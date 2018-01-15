@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     # get a list of the unique chars
     chars = list(set(text))
-    save_as(chars, 'bill_map')
+    save_as(chars, 'models/bill_net/bill_map')
 
 
     # how big the window looking back is
