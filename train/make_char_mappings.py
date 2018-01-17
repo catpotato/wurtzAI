@@ -7,6 +7,12 @@ def save_as(c, name):
     pickle.dump(c, f, -1)
     f.close()
 
+def load_pickle(filename):
+    data = None
+    with open(filename, 'rb+') as f:
+        data = pickle.load(f)
+    return data
+
 def save_as_chars(s, name):
     save_as(list(set(s)), 'char_mappings')
 

@@ -24,8 +24,12 @@ def get_df(path_to_data, size=False, max_len=False):
     for csv in csvs:
         questions_and_answers = pd.concat([questions_and_answers, pd.read_csv(csv)], ignore_index=True)
 
-    if size/questions_and_answers.shape[0] < 1 and size/questions_and_answers.shape[0] > 0:
-        questions_and_answers.sample(frac=(size/questions_and_answers.shape[0])).reset_index(drop=True)
+    if size > 0 and size < questions_and_answers.shape[0]:
+        questions_and_answers = questions_and_answers.sample(n=size).reset_index(drop=True)
+
+    for column in questions_and_answers:
+
+        questions_and_answers[column] = questions_and_answers[column].str.encode('utf-8')
 
     return questions_and_answers
 

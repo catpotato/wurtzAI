@@ -7,6 +7,8 @@ from keras.models import Sequential
 from keras.layers.recurrent import LSTM
 from keras.layers.core import Dense, Activation, Dropout
 
+from debuggers import get_letters
+
 if __name__ == "__main__":
 
     import os
@@ -16,6 +18,8 @@ if __name__ == "__main__":
     # get a list of the unique chars
     chars = list(set(text))
     save_as(chars, 'models/question_net/question_net')
+    print('hello world')
+    print(get_letters(set(text)))
 
     # how big the window looking back is
     max_len = 20
@@ -143,4 +147,8 @@ if __name__ == "__main__":
             print('temperature: %0.2f'%temp)
             print('%s'%generate(temperature=temp))
 
+    print('char_labels')
+    print(char_labels)
+    print('labels_char')
+    print(labels_char)
     model.save('models/question_net/question_net.h5')

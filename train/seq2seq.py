@@ -2,7 +2,7 @@ from transform import transform
 from keras.models import Model, load_model
 from keras.layers import Input, LSTM, Dense
 import numpy as np
-from make_char_mappings import save_as
+from make_char_mappings import save_as, load_pickle
 
 def decode_sequence(input_seq):
     # Encode the input as state vectors.
@@ -132,12 +132,19 @@ if __name__ == "__main__":
     # `encoder_input_data` & `decoder_input_data` into `decoder_target_data`
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
+    save = False
+
+
+
     # Run training
-    model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
-    model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_size=batch_size, epochs=epochs, validation_split=0.2)
-    # Save model
-    model.save('models/s2s/s2s.h5')
-    # model = load_model('models/s2s.h5')
+    if save:
+
+        model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
+        model.fit([encoder_input_data, decoder_input_data], decoder_target_data, batch_size=batch_size, epochs=epochs, validation_split=0.2)
+        model.save('models/s2s/s2s.h5')
+    else:
+        model = load_model('models/s2s/s2s.h5')
+        print('WARNING THIS WILL NOT BE SAVED!')
 
     # Next: inference mode (sampling).
     # Here's the drill:
@@ -163,15 +170,36 @@ if __name__ == "__main__":
     reverse_input_char_index = dict((i, char) for char, i in input_token_index.items())
     reverse_target_char_index = dict((i, char) for char, i in target_token_index.items())
 
-    encoder_model.save('models/s2s/s2s_encoder.h5')
-    decoder_model.save('models/s2s/s2s_decoder.h5')
+    if save:
+        encoder_model.save('models/s2s/s2s_encoder.h5')
+        decoder_model.save('models/s2s/s2s_decoder.h5')
+    else:
+        encoder_model = load_model('models/s2s/s2s_encoder.h5')
+        decoder_model = load_model('models/s2s/s2s_decoder.h5')
 
-    save_as(num_decoder_tokens, 'models/s2s/num_decoder_tokens')
+
+
+    to_save = [
+        'num_decoder_tokens',
+        'target_token_index',
+        'max_decoder_seq_length',
+        'num_decoder_tokens',
+        'num_encoder_tokens',
+        'input_token_index'
+    ]
+
+
+
+
+
+    save_as(num_decoder_tokens, 'models/s2s/')
     save_as(target_token_index, 'models/s2s/target_token_index')
     save_as(max_decoder_seq_length, 'models/s2s/max_decoder_seq_length')
     save_as(num_decoder_tokens, 'models/s2s/num_decoder_tokens')
-    save_as(num_decoder_tokens, 'models/s2s/num_encoder_tokens')
+    save_as(num_encoder_tokens, 'models/s2s/num_encoder_tokens')
     save_as(input_token_index, 'models/s2s/input_token_index')
+
+
 
     for seq_index in range(100):
         # Take one sequence (part of the training test)
