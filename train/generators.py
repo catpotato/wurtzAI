@@ -105,33 +105,25 @@ def sample(probs, temperature):
 def generate_stock(model, char_labels, labels_char, temperature=0.35, seed=None, stop_char = '?', num_chars=100):
 
     max_len = 20
-    predicate=lambda x: len(x) < num_chars
+    predicate=lambda x: x[-1] != stop_char
 
     if seed is not None and len(seed) < max_len:
         raise Exception('Seed text must be at least {} chars long'.format(max_len))
 
     sentence = seed
-    generated = sentence
-
-    print('len sent')
-    print(sentence)
-
-    print(list(char_labels.keys()))
+    generated = ' '
 
     while predicate(generated):
         # generate the input tensor
         # from the last max_len characters generated so far
         x = np.zeros((1, max_len, len(char_labels)))
         for t, char in enumerate(sentence):
-            print char
             x[0, t, char_labels[char]] = 1.
 
         # this produces a probability distribution over characters
         probs = model.predict(x, verbose=0)[0]
 
         # sample the character to use based on the predicted probabilities
-        print('probs!')
-        print()
         next_idx = sample(probs, temperature)
         next_char = labels_char[next_idx]
 

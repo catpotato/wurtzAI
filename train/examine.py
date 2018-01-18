@@ -14,7 +14,7 @@ def load_models():
     for network in glob('models/**/*.h5', recursive=True):
         name = os.path.splitext(os.path.basename(network))[0]
         t = Timer('loading ' + name + ' at ' + network + ' into memory')
-        if(name == 's2s'  or name == 's2s_encoder' or name == 's2s_decoder' or name =='question_net'):
+        if name == 'question_net':
             models[name] = load_model(network)
         t.stop()
 
@@ -22,14 +22,15 @@ def load_models():
 
 
 
-def assemble_answers(num, real, temp=0, name=None):
-    real_as = assemble_real_bills(num)
+def assemble_answers(num, real, real_qs, temp=0, name=None):
+    real_as = assemble_real_bill(num)
     if real:
         return real_qs
     else:
         return assemble_fake(name, real_qs, num, temp, stop_char = '?')
 
 def assemble_questions(num, real, temp=0, name=None):
+    print('temp: ' + str(temp))
     real_qs = assemble_real_questions(num)
     if real:
         return real_qs
@@ -64,9 +65,6 @@ def assemble_fake(name, real_data, num, temp, stop_char):
 
     with open(root_dir + '/labels_char.pkl', 'rb') as f:
         labels_char = pickle.load(f)
-
-    with open(root_dir + '/' + name + '.pkl', 'rb') as f:
-        chars = pickle.load(f)
 
     t.stop()
 
@@ -120,22 +118,40 @@ def examine_line_of_questions(num, temp_range):
     real_qs = assemble_questions(num, real=True)
 
     # get a genarated question, at various temperatures
-    gen_q_list = [assemble_questions(num, real=False, temp=temp) for temp in temp_range]
+    # gen_q_list = [assemble_questions(num, real=False, temp=temp) for temp in temp_range]
 
     # make them go into the machine
     real_as = [assemble_fake('rnn_stock', real_qs, num, temp, stop_char = '.') for temp in temp_range]
 
     # put the genarated ones in the machine!
-    gen_as = [[]]
-    for gen_qs in gen_q_list:
+    # gen_as = [[]]
+    '''for gen_qs in gen_q_list:
         l = []
         for temp in temp_range:
-            l.append(assemble_fake('rnn_stock', gen_qs, num, temp, stop_char = '.') for temp in temp_range)
+            l.append(assemble_fake('rnn_stock', gen_qs, num, temp, stop_char = '.'))
 
-        gen_as.append(l)
+        gen_as.append(l)'''
+
+    with open('results/rnn_stock.txt', 'w+') as f:
+
+        f.write('responding to real questions')
+        for real_a_temp_range, temp in zip(real_as, temp_range):
+            f.write('temp: ' + str(temp) + '\n')
+            add_qandas(f, real_qs, real_a_temp_range)
+
+        '''f.write('responding to fake questions')
+        for gen_qs, gen_a_temp_range, temp in zip(gen_q_list, gen_as, temp_range):
+            f.write('question temp: ' + str(temp) + '\n')
+            for gen_a_list, temp in zip(gen_a_temp_range, temp_range):
+                f.write('answer temp: ' + str(temp) + '\n')
+                add_qandas(f, gen_qs, gen_a_list)'''
 
 
-def examine_bill_question(num, temp_range):
+
+    t.stop()
+
+
+def examine_bill(num, temp_range):
 
     t = Timer('assembling bill and question_net questions')
 
@@ -143,10 +159,24 @@ def examine_bill_question(num, temp_range):
     real_qs = assemble_questions(num, real=True)
 
     # get a genarated question, at various temperatures
-    gen_qs = [assemble_questions(num, real=False, temp=temp) for temp in temp_range]
+    # gen_qs = [assemble_questions(num, real=False, temp=temp) for temp in temp_range]
 
     # get a random answer
-    gen_as = [assemble_answers(num, real=False, temp=temp) for temp in temp_range]
+    real_as = [assemble_fake('bill_net', real_qs, num, temp, stop_char = '.') for temp in temp_range]
+
+    with open('results/bill_net.txt', 'w+') as f:
+
+        f.write('responding to real questions\n')
+        for temp, real_as_list in zip(temp_range, real_as):
+            f.write('temp: ' + str(temp) + '\n')
+            add_qandas(f, real_qs, real_as_list)
+
+        '''f.write('responding to fake questions\n')
+        for gen_q_list, gen_a_list, temp in zip(gen_qs, temp_range):
+            f.write('temp: ' + str(temp) + '\n')
+            add_qandas(f, gen_q_list, gen_a_list)'''
+
+
 
     t.stop()
 
@@ -166,17 +196,17 @@ def examine_seq2seq(num, temp_range):
 
     real_as = assemble_seq2seq(real_qs, num)
 
-    # gen_as = [assemble_seq2seq(gen_q, num) for gen_q in gen_qs]
+    gen_as = [assemble_seq2seq(gen_q, num) for gen_q in gen_qs]
 
     with open('results/seq2seq.txt', 'w+') as f:
 
         f.write('responding to real questions\n')
         add_qandas(f, real_qs, real_as)
 
-        #f.write('responding to fake questions\n')
-        #for l, temp in zip(gen_as, temp_range):
-            #f.write('temp: ' + str(temp) + '\n')
-            #add_list(f, l)
+        f.write('responding to fake questions\n')
+        for l, temp in zip(gen_as, temp_range):
+            f.write('temp: ' + str(temp) + '\n')
+            add_qandas(f, gen_qs, l)
 
     t.stop()
 
@@ -196,4 +226,8 @@ if __name__ == '__main__':
 
     load_models()
     amount = 10
-    examine_seq2seq(amount, [(i+1)*10 for i in range(10)])
+    # examine_seq2seq(amount, [(i+1)*.1 for i in range(10)])
+    # examine_bill(amount, [(i+1)*.1 for i in range(10)])
+    # examine_line_of_questions(amount, [(i+1)*.1 for i in range(10)])
+
+    gen_qs = [assemble_questions(amount, real=False, temp=temp+1/10) for temp in range(10)]

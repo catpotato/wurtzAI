@@ -27,10 +27,6 @@ def get_df(path_to_data, size=False, max_len=False):
     if size > 0 and size < questions_and_answers.shape[0]:
         questions_and_answers = questions_and_answers.sample(n=size).reset_index(drop=True)
 
-    for column in questions_and_answers:
-
-        questions_and_answers[column] = questions_and_answers[column].str.encode('utf-8')
-
     return questions_and_answers
 
 def get_dict(path_to_data):
