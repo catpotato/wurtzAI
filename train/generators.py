@@ -1,11 +1,15 @@
 import numpy as np
 import math, random
 MAX_TEST_RUN = 1000
-from debuggers import get_letters
+
+
+def generate_seq2seq_recovery(text, models, recovery):
+    recovery['encoder_model'] = models['encoder']
+    recovery['decoder_model'] = models['decoder']
+    generate_seq2seq(text, recovery)
 
 def generate_seq2seq(text, recovery_dict):
     # prevent nan attacks
-    print('new answer being generated')
     if type(text) is float:
         return 'nice try stephen fry'
     '''
@@ -82,6 +86,13 @@ def generate_seq2seq(text, recovery_dict):
 
     return decoded_sentence
 
+def generate_rnn_recovery(question, model, recovery, stop_char, temp):
+
+    char_labels = recovery['char_labels']
+    labels_char = recovery['labels_char']
+
+    return generate_rnn(model=model, char_labels=char_labels, labels_char=labels_char, stop_char=stop_char, temp=temp, seed=question)
+
 
 def generate_rnn(model, char_labels, labels_char, stop_char, temp=0.35, seed=None):
 
@@ -102,7 +113,7 @@ def sample(probs, temperature):
     choices = range(len(probs))
     return np.random.choice(choices, p=dist)
 
-def generate_stock(model, char_labels, labels_char, temperature=0.35, seed=None, stop_char = '?', num_chars=100):
+def generate_stock(model, char_labels, labels_char, temperature=0.35, seed=None, stop_char='?', num_chars=100):
 
     max_len = 20
     predicate=lambda x: x[-1] != stop_char
@@ -130,37 +141,4 @@ def generate_stock(model, char_labels, labels_char, temperature=0.35, seed=None,
         generated += next_char
         sentence = sentence[1:] + next_char
 
-    print(generated)
     return generated
-
-'''def generate_stock(model, char_labels, labels_char, temperature=0.35, seed=None, stop_char = '?', num_chars=100):
-
-    max_len = 20
-    predicate=lambda x: x[-1] != stop_char
-
-    if seed is not None and len(seed) < max_len:
-        raise Exception('Seed text must be at least {} chars long'.format(max_len))
-
-    sentence = seed[-1*max_len:]
-    generated = ' '
-
-
-    while predicate(generated):
-        # generate the input tensor
-        # from the last max_len characters generated so far
-        x = np.zeros((1, max_len, len(char_labels)))
-        for t, char in enumerate(sentence):
-            x[0, t, char_labels[char]] = 1.
-
-        # this produces a probability distribution over characters
-        probs = model.predict(x, verbose=0)[0]
-
-        # sample the character to use based on the predicted probabilities
-        next_idx = sample(probs, temperature)
-        next_char = labels_char[next_idx]
-
-        generated += next_char
-        sentence = sentence[1:] + next_char
-        print(sentence)
-    print(generated)
-    return generated'''

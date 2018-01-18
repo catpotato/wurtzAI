@@ -19,6 +19,11 @@ def get_df(path_to_data, size=False, max_len=False):
 
     csvs = glob("../" + path_to_data + "/*/*.csv")
 
+    if not len(csvs):
+        csvs = glob(path_to_data + "/*/*.csv")
+
+
+
     questions_and_answers = pd.DataFrame(columns=['question', 'answer'])
 
     for csv in csvs:

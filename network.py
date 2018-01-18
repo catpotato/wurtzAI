@@ -1,55 +1,37 @@
-import numpy as np
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers.recurrent import LSTM
 from keras.layers.core import Dense, Activation, Dropout
-from dbmodel import table_submitted, table_genarated
-import datetime
+import glob
 
 class Network:
-    def __init__(self, name):
-        self.name = name
-        self.model = model.load('train/' + name)
+    def __init__(self, kind, directory):
 
-    def generate_qa_pairs(self, amount):
-        # TODO genarate questions from model
-        pass
+        self.full_path = 'train/models/' + directory
+        self.kind = kind
+        if kind == 's2s':
 
-    def genarate_answer(self, question):
-        # TODO make answers from a given question from the model
-        pass
+            self.encoder = load_model(glob.glob(self.full_path + '/*encoder.h5')[0])
+            self.decoder = load_model(glob.glob(self.full_path + '/*decoder.h5')[0])
 
-    def add_question(self, question):
-        engine = create_engine('sqlite:///data.db', echo=True)
-        metadata = MetaData()
+        elif kind == 'rnn':
 
-        submitted = table_submitted(metadata)
+            self.model = load_model(glob.glob(self.full_path + '/*.h5')[0])
 
-        ins = submitted.insert()
-        data = [{
-            'month':datetime.datetime.now(),
-            'datetime':datetime.datetime.now(),
-            'question':question,
-            'answer':genarate_answer(question)
-        }]
+        self.recover()
 
-        connection.execute(ins, data)
+        def recover(self):
 
 
-    def generate_db(self):
-        engine = create_engine('sqlite:///data.db', echo=True)
-        metadata = MetaData()
+            # load each pickled file
+            pickles = glob(self.full_path + '/*.pkl')
+            for pickle in pickles
 
-        generated = table_genarated(metadata)
+                # get pickle name
+                filename = os.path.splitext(os.path.basename(pickle))[0]
 
-        datum = []
+                with open(pickle, 'rb+') as f:
+                    # add to dict
+                    data = pickle.load(f)
+                    recovery[filename] = data
 
-        ins = generated.insert()
-
-        for question, answer in zip(generate_qa_pairs(10000)):
-            data = {
-                'question':question,
-                'answer':answer
-            }
-            datum.append(data)
-
-        connection.execute(ins, datum)
+        self.recovery = recovery
